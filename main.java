@@ -1,5 +1,14 @@
 
 import static java.lang.System.exit;
+import java.io.FileInputStream;  
+import java.io.FileNotFoundException;  
+import java.io.IOException;  
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.*;  
+import org.apache.poi.ss.usermodel.Sheet;  
+import org.apache.poi.ss.usermodel.Workbook;  
+import org.apache.poi.xssf.usermodel.XSSFWorkbook; 
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -58,7 +67,7 @@ public class NewJFrame extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
-        });
+        }); 
 
         jButton1.setText("Clear");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -143,15 +152,147 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         //Date Input:
+        int i, k, code1, code2;
+        Double ans1 = 0.0, ans2 = 0.0;
+        //get the date into string format:
         String dd = (String)jComboBox1.getSelectedItem();
+        //convert to int:
         int x = Integer.parseInt(dd);
+
+        //get the month into string format:
         String mm = (String)jComboBox2.getSelectedItem();
+
+        //get the year into string format:
         String yy = (String)jComboBox4.getSelectedItem();
+        //convert to int:
         int z = Integer.parseInt(yy);
         
         //Calculation:
         System.out.println("Date: "+x+" Month: "+mm+" Year: "+z);
+
+        int y = z%100;
+        //System.out.println("Ans: "+y);
+
+        int a = y + x;
+
+        int b = y/4;
+        //System.out.println("Ans: "+b);
+
+        int c = a + b;
+        //System.out.println("Ans: "+c);
+
+        //Take month code from .xlsx sheet:
+        String value1 = null;
+        Workbook wb1 = null;
+        int pos1 = 0;
+
+        try {  
+            //reading data from a file in the form of bytes  
+            FileInputStream fis = new FileInputStream("month_code.xlsx");  
+
+            //constructs an XSSFWorkbook object, by buffering the whole stream into the memory  
+            wb1 = new XSSFWorkbook(fis);  
+        }  
+        catch(FileNotFoundException e) {  
+            e.printStackTrace();  
+        }  
+        catch(IOException e1) {  
+            e1.printStackTrace();  
+        }  
+
+        Sheet sheet1 = wb1.getSheetAt(0);   //getting the XSSFSheet object at given index  
+        Row row1 = sheet1.getRow(0); //returns the logical row  
+
+        for(i = 1, k = 0; i < sheet1.getLastRowNum()+2; i++){
+            Cell cell1 = row1.getCell(k);
+            row1 = sheet1.getRow(i);
+
+            value1 = cell1.getStringCellValue();
+
+            if(value1.equals(mm)){
+                //System.out.println("inside if: "+value1);
+                break;
+            }
+            else{
+                pos1++;
+            }
+        }
+        //System.out.println("pos: "+pos1);
+    
+        //looking into month.xlsx 2nd column:
+
+        row1 = sheet1.getRow(1); 
+        
+        row1 = sheet1.getRow(pos1);
+        Cell cell1 = row1.getCell(1);
+        ans1 = cell1.getNumericCellValue();
+        code1 = (int)Math.round(ans1);
+        //System.out.println("value adjacent to given month: "+code1);
+
+
+
+
+        //Take year code from .xlsx sheet:
+        Double value2 = 0.0;
+        Workbook wb2 = null;
+        int pos2 = 0;
+
+        try {  
+            //reading data from a file in the form of bytes  
+            FileInputStream fis = new FileInputStream("year_code.xlsx");  
+
+            //constructs an XSSFWorkbook object, by buffering the whole stream into the memory  
+            wb2 = new XSSFWorkbook(fis);  
+        }  
+        catch(FileNotFoundException e) {  
+            e.printStackTrace();  
+        }  
+        catch(IOException e1) {  
+            e1.printStackTrace();  
+        }  
+
+        Sheet sheet2 = wb2.getSheetAt(0);   //getting the XSSFSheet object at given index  
+        Row row2 = sheet2.getRow(1); //returns the logical row  
+
+        for(i = 1, k = 0; i < sheet2.getLastRowNum()+2; i++){
+            row2 = sheet2.getRow(i);
+            Cell cell2 = row2.getCell(k);
+            
+            value2 = cell2.getNumericCellValue();
+
+            if(value2 == z){
+                System.out.println("inside if: "+value2 +" z: " + z);
+                break;
+            }
+            else{
+                pos2++;
+            }
+        }
+
+        System.out.println("pos: "+pos2);
+
+        //looking into year.xlsx 2nd column:
+  
+        Cell cell2 = row2.getCell(1);
+        row2 = sheet2.getRow(pos2);  
+        
+        ans2= cell2.getNumericCellValue();
+        code2 = (int)Math.round(ans2);
+        System.out.println("value adjacent to given year: "+code2);
+       
     }                                        
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         //Clear the input field and set to index 0:
