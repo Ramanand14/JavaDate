@@ -1,1 +1,2 @@
-The project is based on the identifying the day of the given date from 1600's onwards to up to 2099's any date. (Under work)
+The project is based on the identifying the day of the given date from year 1600 to 2099. We can find the day of the any date between given years. The applied aws code helps
+visualize the output very affectively.
